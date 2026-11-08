@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mura sign-in</title>
+<style>
+:root{--bg:#1b140f;--ink:#f5e6c4;--gold:#e8b84a;--muted:#cdb48a}
+body{font:16px/1.5 system-ui,sans-serif;margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink)}
+main{max-width:34rem;padding:24px 16px;width:100%;box-sizing:border-box}
+code{display:block;word-break:break-all;background:#2a1d14;border:1px solid #5a3d18;padding:12px;margin:12px 0;font-size:14px}
+button{font:inherit;background:var(--gold);color:#1b140f;border:0;padding:10px 18px;cursor:pointer}
+p.muted{color:var(--muted);font-size:14px}
+</style></head>
+<body><main>
+<h1>Signed in</h1>
+<p id="msg">Copy this code and paste it to Claude Code (it expires in a few minutes):</p>
+<code id="code">…</code>
+<button id="copy" type="button">Copy the code</button>
+<p class="muted">Nothing is sent from this page. The code only works together with the village's private app secret, which lives on the Mac Mini.</p>
+</main>
+<script>
+const q = new URLSearchParams(location.search);
+const code = q.get('code');
+const err = q.get('error_description') || q.get('error');
+const el = document.getElementById('code');
+if (code) el.textContent = code;
+else { document.getElementById('msg').textContent = err ? 'The sign-in didn’t finish: ' + err : 'No code here. Start the sign-in again from the link Claude Code gave you.'; el.hidden = true; document.getElementById('copy').hidden = true; }
+document.getElementById('copy').onclick = async () => { try { await navigator.clipboard.writeText(code); document.getElementById('copy').textContent = 'Copied'; } catch { getSelection().selectAllChildren(el); } };
+</script>
+</body></html>
